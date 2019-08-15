@@ -1,7 +1,7 @@
 from collections.abc import MutableMapping, Mapping
 from py2store.util import lazyprop
 from py2store.errors import KeyValidationError
-from py2store.mixins import PrefixRelativizationMixin
+from py2store.key_mappers.paths import PrefixRelativizationMixin
 from py2store.core import PrefixRelativization
 
 
