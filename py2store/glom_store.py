@@ -39,19 +39,19 @@ class GlomMap(Mapping):
 
     def __init__(self,
                  target,
-                 nested_types=(dict,),
+                 node_types=(dict,),
                  key_concat=lambda prefix, suffix: prefix + '.' + suffix,
                  names_of_literals=(),
                  **kwargs):
         __doc__ = "A Mapping interface for glom. Fixes the target, and keys are considered as keys\n\n" \
                   + str(glom.__doc__)
         self._target = target
-        self._nested_types = nested_types
+        self._node_types = node_types
         self._key_concat = key_concat
         self._names_of_literals = set(names_of_literals)
 
         self._kwargs = kwargs  # the stuff that is given to the **kwargs of glom
-        self._mk_similar_glommap = lambda x: self.__class__(x, key_concat=key_concat, nested_types=nested_types,
+        self._mk_similar_glommap = lambda x: self.__class__(x, key_concat=key_concat, node_types=node_types,
                                                             **kwargs)
 
     def __getitem__(self, spec):
@@ -67,7 +67,7 @@ class GlomMap(Mapping):
         """Depth first traversal: All nodes yielded."""
         for k in self._target:
             val = self[Path(k)]
-            if isinstance(self[k], *self._nested_types):
+            if isinstance(self[k], *self._node_types):
                 yield from (self._key_concat(k, nested_key) for nested_key in self._mk_similar_glommap(val))
             yield k
 
@@ -102,12 +102,12 @@ class GlomLeafMap(GlomMap):
         """Depth first traversal: Only leaf nodes yielded."""
         for k in self._target:
             val = self[Path(k)]
-            if isinstance(val, *self._nested_types):
+            if isinstance(val, *self._node_types):
                 yield from (self._key_concat(k, nested_key) for nested_key in self._mk_similar_glommap(val))
             else:
                 yield k
 
-            # if isinstance(self[k], *self._nested_types):
+            # if isinstance(self[k], *self._node_types):
             #     try:
             #         yield from (self._key_concat(k, nested_key) for nested_key in self._mk_similar_glommap(self[k]))
             #     except PathAccessError:
@@ -116,3 +116,20 @@ class GlomLeafMap(GlomMap):
             #                     self._mk_similar_glommap(self[path_k]))
             # else:
             #     yield k
+
+
+dot_str_key_iterator = lambda p: p.split('.')
+bracket_getter = lambda obj, k: obj[k]
+
+
+def simple_glom(target, spec,
+                node_types=(dict,),
+                key_iterator=dot_str_key_iterator,
+                item_getter=bracket_getter
+                ):
+    for k in key_iterator(spec):
+        print(k)
+        target = item_getter(target, k)
+        if not isinstance(target, node_types):
+            break
+    return target
