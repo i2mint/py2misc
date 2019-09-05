@@ -38,17 +38,17 @@ def mk_reader_and_writer(sr: int, format='RAW', subtype=None, dtype='float64', c
     Returns:
         read(k), write(k, v) functions
 
-    >>>  n_channels, dtype = 1, 'float64'
+    >>> n_channels, dtype = 1, 'float64'
     >>> read, write = mk_reader_and_writer(sr=44100, channels=n_channels, subtype='FLOAT', format='RAW', dtype=dtype)
     >>> data = _random_matrix(n_channels=n_channels, dtype=dtype)
     >>> _test_data_write_read(data, writer=write, reader=read)
 
-    >>>  n_channels, dtype = 4, 'int16'
-    >>>  read, write = mk_reader_and_writer(sr=2, channels=n_channels, subtype='PCM_16', format='RAW', dtype=dtype)
-    >>>  data = _random_matrix(n_channels=n_channels, dtype=dtype)
-    >>>  _test_data_write_read(data, writer=write, reader=read)
+    >>> n_channels, dtype = 4, 'int16'
+    >>> read, write = mk_reader_and_writer(sr=2, channels=n_channels, subtype='PCM_16', format='RAW', dtype=dtype)
+    >>> data = _random_matrix(n_channels=n_channels, dtype=dtype)
+    >>> _test_data_write_read(data, writer=write, reader=read)
     """
-    if sf.check_format(format, subtype, endian):
+    if not sf.check_format(format, subtype, endian):
         raise WrongSerializationParams(f"Not a valid combo: format={format}, subtype={subtype}, endian={endian}")
 
     subtype = subtype or sf.default_subtype(format)
