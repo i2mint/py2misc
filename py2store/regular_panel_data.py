@@ -12,7 +12,7 @@ class WrongSerializationParams(ValueError):
     pass
 
 
-def mk_reader_and_writer(sr: int, format='RAW', subtype=None, dtype='float64', channels: int = 1,
+def mk_reader_and_writer(sr: int, format='RAW', subtype='PCM_16', dtype='int16', channels: int = 1,
                          endian=None, always_2d=False):
     """ Makes a (bijective) pair of numerical arrays serializer and deserializer functions.
     A function returning bijective panel data reader and writer functions with simple interfaces (all parametrizations
