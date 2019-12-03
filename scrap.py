@@ -1,42 +1,45 @@
+# def foo(a: int = 0, b: int = 0, c=0):
+#     """This is foo. It computes something"""
+#     return (a * b) + c
+#
+#
+# def bar(x, greeting='hello'):
+#     """bar greets it's input"""
+#     return f"{greeting} {x}"
+#
+#
+# def confuser(a: int = 0, x: float = 3.14):
+#     return (a ** 2) * x
+#
+#
+# from py2misc import dispatch_funcs
+#
+# dispatch_funcs([foo, bar, confuser], 'dash')
 
 
-
-import os
-from collections.abc import MutableMapping
-
-
-class Persister(MutableMapping):
-    def __len__(self):
-        sum(1 for _ in self.__iter__())
-
-    def clear(self):
-        raise NotImplementedError("No way I'm allowing that!")
+def func(obj):
+    return obj.a + obj.b
 
 
-class SimpleFilePersister(Persister):
-    def __init__(self, rootdir, mode='t'):
-        assert mode in {'t', 'b', ''}, f"mode ({mode}) not valid"
-        self.mode = mode
-        self.rootdir = rootdir
-
-    def __iter__(self):
-        yield from os.listdir(self.rootdir)
-
-    def __getitem__(self, k):
-        with open(k, 'r' + self.mode) as fp:
-            data = fp.read()
-        return data
-
-    def __setitem__(self, k, v):
-        with open(k, 'w' + self.mode) as fp:
-            fp.write(v)
-
-    def __delitem__(self, k):
-        os.remove(k)
-
-    def __contains__(self, k):
-        return os.path.isfile(k)
+def other_func(obj):  # not used on target class instance
+    return int(obj)
 
 
+class A:
+    e = 2
 
+    def __init__(self, a=0, b=0, c=1, d=10):
+        self.a = a
+        self.b = b
+        self.c = c
+        self.d = d
 
+    def target_method(self, x=3):
+        t = func(self)
+        tt = self.other_method(t)
+        w = other_func(x.d)
+        return x * tt / (self.e + w)
+
+    def other_method(self, x=1):
+        w = other_func(x)
+        return self.c * x * w

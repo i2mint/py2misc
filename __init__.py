@@ -1,0 +1,1 @@
+from py2misc.dispatch_anything import dispatch_funcs

@@ -85,11 +85,12 @@ def mk_request_function(method_spec):
     # TODO: inject a signature, and possibly a __doc__ in this function
     def request_func(self, *args, **kwargs):
 
+        # print(args, arg_order)
         # absorb args in kwargs
-        if len(args) > len(arg_order):
-            raise ValueError(
-                f"The number ({len(args)}) of unnamed arguments was greater than "
-                f"the number ({len(arg_order)}of specified arguments in arg_order")
+        # if len(args) > len(arg_order):
+        #     raise ValueError(
+        #         f"The number ({len(args)}) of unnamed arguments was greater than "
+        #         f"the number ({len(arg_order)}) of specified arguments in arg_order")
 
         kwargs = dict(kwargs, **{argname: argval for argname, argval in zip(arg_order, args)})
 
@@ -165,7 +166,7 @@ def mk_request_method(method_spec):
         if len(args) > len(arg_order):
             raise ValueError(
                 f"The number ({len(args)}) of unnamed arguments was greater than "
-                f"the number ({len(arg_order)}of specified arguments in arg_order")
+                f"the number ({len(arg_order)}) of specified arguments in arg_order")
 
         kwargs = dict(kwargs, **{argname: argval for argname, argval in zip(arg_order, args)})
 

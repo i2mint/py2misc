@@ -3,7 +3,7 @@ Also posted on https://stackoverflow.com/questions/57596431/python-dict-like-int
 See there for possible comments.
 """
 from collections.abc import Mapping
-from glom import glom, Literal, Path, PathAccessError
+from glom import glom, Path
 
 
 # TODO: Handle names_of_literals concern better. Here affects all keys with that name (regardless of parent context)
