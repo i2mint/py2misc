@@ -221,7 +221,7 @@ class Py2Request(object):
     """ Make a class that has methods that offer a python interface to web requests """
 
     def __init__(self, method_specs=None,
-                 method_func_from_method_spec=DFLT_METHOD_FUNC_FROM_METHOD_SPEC):
+                 method_func_from_method_spec=DFLT_METHOD_FUNC_FROM_METHOD_SPEC, **kwargs):
         """
         Initialize the object with web request calling methods.
         You can also just make an empty Py2Request object, and inject methods later on, one by one.
@@ -239,6 +239,7 @@ class Py2Request(object):
 
         >>> import re
         >>> from collections import Counter
+        >>> from functools import lru_cache
         >>> # Defining the functions we'll use
         >>> def print_content(r):
         ...     print(r.text)
@@ -263,7 +264,8 @@ class Py2Request(object):
         ...     },
         ...     'my_ip': {
         ...         'url_template': 'https://api.ipify.org?format=json',
-        ...         'output_trans': dict_of_json
+        ...         'output_trans': dict_of_json,
+        ...         'method_wrap': lru_cache()
         ...     },
         ...     'print_ip_location': {
         ...         'url_template': 'http://ip-api.com/#{ip_address}',
@@ -277,7 +279,7 @@ class Py2Request(object):
         >>> # And I'll let the reader try the other requests, whose results are not stable enough to test like this
 
         """
-        self._method_specs = method_specs
+        self._method_specs = dict(method_specs or {}, **kwargs)
         self._dflt_method_func_from_method_spec = method_func_from_method_spec
         self._process_method_specs()
 
@@ -292,11 +294,21 @@ class Py2Request(object):
                                                       (x[1] for x in str_formatter.parse(method_spec['url_template']))))
 
     def _inject_method(self, method_name, method_spec, method_func_from_method_spec=None):
+        method_wrap = None
         if not callable(method_spec):
+            method_spec = dict(**method_spec)
+            args = []
+            if isinstance(method_spec, dict):
+                args = method_spec.get('args', [])
+            method_wrap = method_spec.pop('method_wrap', None)
             if method_func_from_method_spec is None:
                 method_func_from_method_spec = self._dflt_method_func_from_method_spec
             method_spec = method_func_from_method_spec(method_spec)
+            set_signature_of_func(method_spec, ['self'] + args)
         inject_method(self, method_spec, method_name)
+
+        if method_wrap is not None:
+            setattr(self, method_name, method_wrap(getattr(self, method_name)))
 
 
 class UrlMethodSpecsMaker:
@@ -339,26 +351,28 @@ class UrlMethodSpecsMaker:
         ['user', 'msg']
         """
         self.url_root = url_root
-        if constant_url_query is None:
-            self.constant_url_suffix = ''
-        else:
-            self.constant_url_suffix = '?' + '&'.join(
-                map(lambda kv: f'{kv[0]}={kv[1]}', constant_url_query.items()))
+        self.constant_url_query = constant_url_query or {}
+        # if constant_url_query is None:
+        #     self.constant_url_suffix = ''
+        # else:
+        #     self.constant_url_suffix = '?' + '&'.join(
+        #         map(lambda kv: f'{kv[0]}={kv[1]}', constant_url_query.items()))
         self.constant_items = constant_items
 
-    def __call__(self, route, url_queries=None):
+    def __call__(self, route='', url_queries=None, **more_url_queries):
         d = {}
-        url_template = self.url_root + route + self.constant_url_suffix
+        url_template = self.url_root + route
         if url_queries is None:
             d = {'url_template': url_template}
-        if url_queries is not None:
+        else:
             if isinstance(url_queries, str):
                 url_queries = {url_queries: url_queries}
             elif isinstance(url_queries, (list, tuple, set)):
                 url_queries = {name: name for name in url_queries}
             # assert the general case where url query (key) and arg (val) names are different
             assert isinstance(url_queries, dict), "url_queries should be a dict"
-            url_template += '&' + '&'.join(
+            url_queries = dict(self.constant_url_query, **dict(url_queries, **more_url_queries))
+            url_template += '?' + '&'.join(
                 map(lambda kv: f'{kv[0]}={{{kv[1]}}}', url_queries.items()))
             d = {'url_template': url_template, 'args': list(url_queries.values())}
         return dict(d, **self.constant_items)
