@@ -27,8 +27,8 @@ to the functionality you actually need: Functions with the python types you're u
 The development of `requests` 
 (including the [recommended add-ons](https://requests.readthedocs.io/en/master/community/recommended/)) could be said to be facing the metal (raw http mecanics) and building interfaces with humans in mind. By contrast, we want to face the human and build adapters to communicate with the metal. That is, in our case, the fact that http is under the hood shouldn't even be visible (unless it needs to).
 
-It's in honor of the inspiration of "designing for humans" that we reuse requests' "http for humans" tag-line, 
-extending it to "requests for humans".
+It's in honor of the inspiration of "designing for humans" that we extend requests' tag-line, 
+to "requests for humans".
 
 # The approach
 
