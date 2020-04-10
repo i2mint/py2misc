@@ -128,7 +128,7 @@ def simple_glom(target, spec,
                 item_getter=bracket_getter
                 ):
     for k in key_iterator(spec):
-        print(k)
+        # print(k)
         target = item_getter(target, k)
         if not isinstance(target, node_types):
             break

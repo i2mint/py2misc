@@ -190,8 +190,12 @@ class SimpleFileStore(PrefixRelativization, Store):
         Store.__init__(self, store=store)
 
 
+DFLT_READ_MODE = ''
+DFLT_WRITE_MODE = ''
+DFLT_DELETE_MODE = True
+
 # LocalFileStore is a more flexible FileStore with more functionalities. Excluding to not detract from the essentials.
-from py2store.persisters.local_files import PathFormatPersister, DFLT_READ_MODE, DFLT_WRITE_MODE, DFLT_DELETE_MODE
+from py2store.persisters.local_files import PathFormatPersister
 
 
 class PathFormatStore(PathFormatPersister, StoreBase):
@@ -299,7 +303,7 @@ class DirStoreLeveled(PrefixRelativizationMixin, Store):
 # S3
 
 from botocore.exceptions import ClientError
-from py2store.stores.s3_store import get_s3_resource
+from py2misc.py2store.simple import get_s3_resource
 from py2store.stores.s3_store import DFLT_AWS_S3_ENDPOINT, DFLT_BOTO_CLIENT_VERIFY, DFLT_CONFIG
 from functools import partial
 

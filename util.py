@@ -31,7 +31,7 @@ in a place that your python path (i.e. PYTHONPATH environment variable).
 class SubscriptableType:
     """
     To make type ints that are subscriptable.
-    If you're custom type is a contaiiner of sorts, you might want to say something about the type of it's contents.
+    If you're custom type is a container of sorts, you might want to say something about the type of it's contents.
     This is a way. Using the dunder: __class_getitem__
 
     >>> class A(SubscriptableType): ...

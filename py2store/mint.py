@@ -465,7 +465,7 @@ def wraps(func, injected=None, expected=None, **kw):
     and :mod:`introspection <inspect>`. Usage is identical to the
     built-in version::
 
-        >>> from boltons.funcutils import wraps
+        >>> from py2misc.py2store.mint import wraps
         >>>
         >>> def print_return(func):
         ...     @wraps(func)
