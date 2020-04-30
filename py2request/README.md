@@ -41,3 +41,11 @@ So for py2request, where are we and where do we want to be?
 **What we'd like**: A Python interface to these web stuff. That is, we want to talk python to the resources, and have it talk python back to us. Further, we want this conversation to be to the point; we don't want to have to say more than the exact necessary, and don't want responses containing anything but exactly what we want and how we want it. Finally, we'd like to get this with minimum effort -- letting default choices be made for us, but being able to make our own choices if we want.
 
 Is that too much to ask?
+
+In the layered approach we'll go from function specifications, to functions returning python Request objects, which we can then wrap further to create functions actually executing the request, getting back a Response object, and wrap further to get the final python output type.
+
+So the objects in this pipeline are:
+* Specification
+* Request
+* Response
+* Final python object
