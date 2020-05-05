@@ -1,3 +1,6 @@
+This project now grew up, left it's birth home (well... it's third one), and moved permanently to it's own home: 
+https://github.com/i2mint/http2py
+
 
 # (Http) Requests for humans
 
