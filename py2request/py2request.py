@@ -24,8 +24,8 @@ import string
 from py2misc.util import I2mintModuleNotFoundErrorNiceMessage
 
 with I2mintModuleNotFoundErrorNiceMessage():
-    from py2mint.util import inject_method, imdict
-    from py2mint.signatures import set_signature_of_func
+    from i2.util import inject_method, imdict
+    from i2.signatures import set_signature_of_func
 
 DFLT_PORT = 5000
 DFLT_BASE_URL = 'http://localhost:{port}'.format(port=DFLT_PORT)
