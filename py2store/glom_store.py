@@ -2,12 +2,12 @@
 Also posted on https://stackoverflow.com/questions/57596431/python-dict-like-interface-to-glom.
 See there for possible comments.
 """
-from collections.abc import Mapping
+from py2store.base import KvReader
 from py2store.utils.glom import glom, Path
 
 
 # TODO: Handle names_of_literals concern better. Here affects all keys with that name (regardless of parent context)
-class GlomMap(Mapping):
+class GlomMap(KvReader):
     """
     A dict-like interface to glom.
     Glom?
@@ -56,12 +56,6 @@ class GlomMap(Mapping):
 
     def __getitem__(self, spec):
         return glom(self._target, spec, **self._kwargs)
-
-    def __len__(self):
-        count = 0
-        for _ in self:
-            count += 1
-        return count
 
     def __iter__(self):
         """Depth first traversal: All nodes yielded."""
