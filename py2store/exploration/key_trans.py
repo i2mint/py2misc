@@ -1,6 +1,6 @@
 import os
 from functools import wraps
-from py2store.key_mappers.naming import StrTupleDict
+from py2store.naming import StrTupleDict
 from py2store.trans import wrap_kvs
 
 pjoin = os.path.join
