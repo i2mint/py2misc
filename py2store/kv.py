@@ -2,7 +2,7 @@ from collections.abc import MutableMapping, Mapping
 from py2store.util import lazyprop
 from py2store.errors import KeyValidationError
 from py2store.paths import PrefixRelativizationMixin
-from py2store.core import PrefixRelativization
+from dol.paths import PrefixRelativization
 
 
 # TODO: Define store type so the type is defined by it's methods, not by subclassing.
