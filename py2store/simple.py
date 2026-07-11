@@ -187,8 +187,7 @@ def filepaths_in_dir(rootdir):
 def iter_filepaths_in_folder_recursively(root_folder):
     for full_path in filepaths_in_dir(root_folder):
         if os.path.isdir(full_path):
-            for entry in iter_filepaths_in_folder_recursively(full_path):
-                yield entry
+            yield from iter_filepaths_in_folder_recursively(full_path)
         else:
             if os.path.isfile(full_path):
                 yield full_path
@@ -208,7 +207,7 @@ class VerySimpleFilePersister(Persister):
         self.rootdir = ensure_slash_suffix(rootdir)
 
     def __getitem__(self, k):
-        with open(k, 'r') as fp:
+        with open(k) as fp:
             data = fp.read()
         return data
 
@@ -362,7 +361,7 @@ class S3BucketPersister(Persister):
         try:
             return k.get()['Body'].read()
         except Exception as e:
-            raise NoSuchKeyError("Key wasn't found: {}".format(k))
+            raise NoSuchKeyError(f"Key wasn't found: {k}")
 
     def __setitem__(self, k, v):
         k.put(Body=v)
@@ -373,7 +372,7 @@ class S3BucketPersister(Persister):
         except Exception as e:
             if hasattr(e, '__name__'):
                 if e.__name__ == 'NoSuchKey':
-                    raise NoSuchKeyError("Key wasn't found: {}".format(k))
+                    raise NoSuchKeyError(f"Key wasn't found: {k}")
             raise  # if you got so far
 
     def __iter__(self):

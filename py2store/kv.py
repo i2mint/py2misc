@@ -144,8 +144,7 @@ def iter_filepaths_in_folder(root_folder):
 def iter_filepaths_in_folder_recursively(root_folder):
     for full_path in iter_filepaths_in_folder(root_folder):
         if os.path.isdir(full_path):
-            for entry in iter_filepaths_in_folder_recursively(full_path):
-                yield entry
+            yield from iter_filepaths_in_folder_recursively(full_path)
         else:
             if os.path.isfile(full_path):
                 yield full_path
@@ -339,7 +338,7 @@ class S3BucketStoreBase(StoreBase):
         try:  # TODO: Didn't manage to catch this exception for some reason. Make it work!
             return k.get()['Body'].read()
         except Exception as e:
-            raise NoSuchKeyError("Key wasn't found: {}".format(k))
+            raise NoSuchKeyError(f"Key wasn't found: {k}")
             # if hasattr(e, '__name__'):
             #     if e.__name__ == 'NoSuchKey':
             #         raise NoSuchKeyError("Key wasn't found: {}".format(k))
@@ -371,7 +370,7 @@ class S3BucketStoreBase(StoreBase):
         except Exception as e:
             if hasattr(e, '__name__'):
                 if e.__name__ == 'NoSuchKey':
-                    raise NoSuchKeyError("Key wasn't found: {}".format(k))
+                    raise NoSuchKeyError(f"Key wasn't found: {k}")
             raise  # if you got so far
 
     def __iter__(self):

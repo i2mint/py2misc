@@ -28,7 +28,7 @@ with I2mintModuleNotFoundErrorNiceMessage():
     from i2.signatures import set_signature_of_func
 
 DFLT_PORT = 5000
-DFLT_BASE_URL = 'http://localhost:{port}'.format(port=DFLT_PORT)
+DFLT_BASE_URL = f'http://localhost:{DFLT_PORT}'
 DFLT_REQUEST_METHOD = 'GET'
 DFLT_REQUEST_KWARGS = imdict({'method': DFLT_REQUEST_METHOD, 'url': ''})
 
@@ -170,12 +170,12 @@ DFLT_METHOD_FUNC_FROM_METHOD_SPEC = mk_request_function
 str_formatter = string.Formatter()
 
 
-class Py2Request(object):
+class Py2Request:
     """ Make a class that has methods that offer a python interface to web requests """
 
     def __init__(self, method_specs=None,
                  method_func_from_method_spec=DFLT_METHOD_FUNC_FROM_METHOD_SPEC, **kwargs):
-        """
+        r"""
         Initialize the object with web request calling methods.
         You can also just make an empty Py2Request object, and inject methods later on, one by one.
 

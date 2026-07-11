@@ -1,5 +1,5 @@
 import os
-from typing import Callable
+from collections.abc import Callable
 from glob import iglob
 from typing import Any
 
@@ -104,15 +104,15 @@ class FilepathOf(PathOf):
 # Local Storage
 
 @attr.s
-class IterableDirMixin(object):
+class IterableDirMixin:
     rootdir = attr.ib(default='')
     ext = attr.ib(default='')
 
     def __iter__(self):
-        return iglob('{}{}*{}'.format(self.rootdir, file_sep, self.ext))
+        return iglob(f'{self.rootdir}{file_sep}*{self.ext}')
 
 
-class LocalFileDeletionMixin(object):
+class LocalFileDeletionMixin:
     """
     Class that is meant to be used to define the delete method of a subclass as the local file delete
     Note: Most of the time, should be included as the first super class, or at least before any other class

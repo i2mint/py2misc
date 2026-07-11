@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # ------------------------------------------------------------------------------
 # file: $Id$
 # auth: metagriffin <mg.github@uberdev.org>
@@ -27,7 +26,7 @@ E = EXACT
 
 
 # ------------------------------------------------------------------------------
-class Tokenizer(object):
+class Tokenizer:
     LITERAL = 'literal'  # abcdef...
     SINGLE = 'single'  # ?
     MULTIPLE = 'multiple'  # *
@@ -47,8 +46,7 @@ class Tokenizer(object):
         '''
         Generates four-element tuples of: (type, value, start, end).
         '''
-        for token in self._outer():
-            yield token
+        yield from self._outer()
 
     def _outer(self):
         start = self.pos
@@ -62,7 +60,7 @@ class Tokenizer(object):
             if cur == '\\':
                 self.pos += 1
                 if self.pos >= len(self.source):
-                    raise ValueError('dangling backslash "\\" in glob: %s' % (self.source,))
+                    raise ValueError('dangling backslash "\\" in glob: {}'.format(self.source))
                 value += self.source[self.pos]
                 self.pos += 1
                 continue
@@ -102,14 +100,14 @@ class Tokenizer(object):
             self.pos += 1
             if cur == '\\':
                 if self.pos >= len(self.source):
-                    raise ValueError('dangling backslash "\\" in glob: %s' % (self.source,))
+                    raise ValueError('dangling backslash "\\" in glob: {}'.format(self.source))
                 value += self.source[self.pos]
                 self.pos += 1
                 continue
             if cur == target:
                 return value
             value += cur
-        raise ValueError('no terminating "%s" in glob: %s' % (target, self.source))
+        raise ValueError('no terminating "{}" in glob: {}'.format(target, self.source))
 
 
 WILDCHARS = '?*[{\\'
@@ -134,7 +132,7 @@ def compile(pattern, flags=0, sep=None, split_prefix=False):
     * ``?``:     matches any single character excluding the separator character
     * ``*``:     matches zero or more characters excluding the separator character
     * ``**``:    matches zero or more characters including the separator character
-    * ``\``:     escape character used to precede any of the others for a literal
+    * ``\\``:     escape character used to precede any of the others for a literal
     * ``[...]``: matches any character in the specified regex-style range
     * ``{...}``: inlines a regex expression
 
@@ -174,9 +172,9 @@ def compile(pattern, flags=0, sep=None, split_prefix=False):
     if sep is None:
         sep = '/'
     if not sep:
-        TypeError('invalid parameter "sep" value: %r' % (sep,))
+        TypeError('invalid parameter "sep" value: {!r}'.format(sep))
     if set(sep) & set(SPECIAL_CHARS):
-        TypeError('parameter "sep" cannot contain any of %r' % (SPECIAL_CHARS,))
+        TypeError('parameter "sep" cannot contain any of {!r}'.format(SPECIAL_CHARS))
     if len(sep) == 1:
         literal = re.escape
     else:

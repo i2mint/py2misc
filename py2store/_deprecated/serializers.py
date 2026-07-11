@@ -50,7 +50,7 @@ def mk_file_reader_for_wav(dtype='int16', wf_only=True, assert_sr=None, **kwargs
         # ', '.join(('{}={}'.format(k, v) for k, v in kwargs.items())))
         wf, sr = sf.read(filepath, dtype=dtype, **kwargs)
         if assert_sr is not None:
-            assert sr == assert_sr, "Sample rate must be {} (was {})".format(assert_sr, sr)
+            assert sr == assert_sr, f"Sample rate must be {assert_sr} (was {sr})"
         if wf_only:
             return wf
         else:
@@ -81,7 +81,7 @@ def mk_file_reader_for_pcm(dtype='int16', wf_only=True, assert_sr=None, **kwargs
         # ', '.join(('{}={}'.format(k, v) for k, v in kwargs.items())))
         wf, sr = sf.read(filepath, dtype=dtype, **kwargs)
         if assert_sr is not None:
-            assert sr == assert_sr, "Sample rate must be {} (was {})".format(assert_sr, sr)
+            assert sr == assert_sr, f"Sample rate must be {assert_sr} (was {sr})"
         if wf_only:
             return wf
         else:

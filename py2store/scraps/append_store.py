@@ -16,7 +16,7 @@ class AppendToFile:
             self._mk_empty_file()
             return nothing
         else:
-            with open(self.filepath, 'r') as fp:
+            with open(self.filepath) as fp:
                 return list(map(self._data_to_val, fp.read().splitlines()))
 
     def _mk_empty_file(self):

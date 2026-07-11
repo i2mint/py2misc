@@ -22,7 +22,7 @@ class KeyToName:
 
     @staticmethod
     def by_sink_character_replacement(repl_non_alphanum_with='__'):
-        non_alpha_num = re.compile('\W')
+        non_alpha_num = re.compile(r'\W')
         non_letter_or_underscore = re.compile('^[^a-zA-Z_]+')
 
         def key_to_name(k):

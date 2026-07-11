@@ -2,7 +2,8 @@ from collections.abc import Mapping
 from glob import iglob
 import os
 import re
-from typing import Callable, Union, Any
+from typing import Union, Any
+from collections.abc import Callable
 import soundfile as sf  # TODO: Replace by another wav reader, and move to another module
 
 from py2store.mixins import IterBasedSizedContainerMixin
@@ -80,7 +81,7 @@ def pattern_filter(pattern):
 
 
 def recursive_file_walk_iterator_with_filepath_filter(root_folder,
-                                                      filt: Union[str, Callable] = None,
+                                                      filt: str | Callable = None,
                                                       return_full_path=True):
     if not callable(filt):
         if filt is None:
@@ -90,8 +91,7 @@ def recursive_file_walk_iterator_with_filepath_filter(root_folder,
     for name in iter_relative_files_and_folder(root_folder):
         full_path = os.path.join(root_folder, name)
         if os.path.isdir(full_path):
-            for entry in recursive_file_walk_iterator_with_filepath_filter(full_path, filt, return_full_path):
-                yield entry
+            yield from recursive_file_walk_iterator_with_filepath_filter(full_path, filt, return_full_path)
         else:
             if os.path.isfile(full_path):
                 if filt(full_path):
@@ -138,7 +138,7 @@ def _mk_file_reader_for_wav(dtype='int16', wf_only=True, assert_sr=None, **kwarg
         # ', '.join(('{}={}'.format(k, v) for k, v in kwargs.items())))
         wf, sr = sf.read(filepath, dtype=dtype, **kwargs)
         if assert_sr is not None:
-            assert sr == assert_sr, "Sample rate must be {} (was {})".format(assert_sr, sr)
+            assert sr == assert_sr, f"Sample rate must be {assert_sr} (was {sr})"
         if wf_only:
             return wf
         else:
@@ -289,7 +289,7 @@ class LocalFileObjReader(AbstractObjReader):
         try:
             return self._contents_of_file(k)
         except Exception as e:
-            raise KeyError("KeyError in {} when trying to __getitem__({}): {}".format(e.__class__.__name__, k, e))
+            raise KeyError(f"KeyError in {e.__class__.__name__} when trying to __getitem__({k}): {e}")
 
 
 class LocalFileObjReaderWithPathCollection(LocalFileObjReader):
@@ -357,10 +357,10 @@ class LocalFileObjReaderWithPathCollection(LocalFileObjReader):
         try:
             return self._contents_of_file(k)
         except Exception as e:
-            raise KeyError("KeyError in {} when trying to __getitem__({}): {}".format(e.__class__.__name__, k, e))
+            raise KeyError(f"KeyError in {e.__class__.__name__} when trying to __getitem__({k}): {e}")
 
 
-class AbstractObjSource(object):
+class AbstractObjSource:
     pass
 
 
@@ -459,7 +459,7 @@ class LocalFileObjSourceWithPathFormat(AbstractObjSource):
         if '{' not in path_format:
             self._rootdir = path_format
         else:
-            rootdir = re.match('[^\{]*', path_format).group(0)
+            rootdir = re.match(r'[^\{]*', path_format).group(0)
             self._rootdir = os.path.dirname(rootdir)
 
         if path_format == self._rootdir:  # if the path_format is equal to the _rootdir (i.e. there's no {} formatting)
@@ -520,7 +520,7 @@ class LocalFileObjSourceWithPathFormat(AbstractObjSource):
         try:
             return self._contents_of_file(k)
         except Exception as e:
-            raise KeyError("KeyError in {} when trying to __getitem__({}): {}".format(e.__class__.__name__, k, e))
+            raise KeyError(f"KeyError in {e.__class__.__name__} when trying to __getitem__({k}): {e}")
 
 
 class LocalFileObjReaderWithCachedKeys(LocalFileObjReader):

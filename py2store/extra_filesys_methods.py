@@ -65,14 +65,14 @@ class FaccException(Exception):
         self.message = message
 
     def __str__(self):
-        return 'FaccException::{}'.format(self.message)
+        return f'FaccException::{self.message}'
 
     @classmethod
     def not_implemented(cls):
         return FaccException('Not implemented')
 
 
-class GenericFileAccess(object):
+class GenericFileAccess:
 
     def __init__(self, path=None):
         self._path = path
@@ -157,11 +157,10 @@ class GenericFileAccess(object):
 
     def __iter__(self):
         if self._path and self.isdir(self._path):
-            for items in self.listdir(self._path):
-                yield items
+            yield from self.listdir(self._path)
 
     def __str__(self):
-        return '{}::{}'.format(self.__class__.__name__, self._path)
+        return f'{self.__class__.__name__}::{self._path}'
 
     @classmethod
     def filepath_search(cls, filepath, search_paths=()):
@@ -213,7 +212,7 @@ class GenericFileAccess(object):
             return S3_FTYPE
         else:
             raise ValueError(
-                "Couldn't figure out the ftype for: {}".format(ref))
+                f"Couldn't figure out the ftype for: {ref}")
 
 
 class LocalFileAccess(GenericFileAccess):
@@ -305,7 +304,7 @@ class S3FileAccess(GenericFileAccess):
                 info = self.fs.info(path)
                 return info['Size']
             except Exception as ex:
-                raise Exception("File does not exist : {}".format(ex.message))
+                raise Exception(f"File does not exist : {ex.message}")
         else:
             raise Exception("File does not exist")
 
@@ -326,7 +325,7 @@ class S3FileAccess(GenericFileAccess):
         pass
 
 
-class FileAccess(object):
+class FileAccess:
     """
         Factory class that provides factory method for file access depending on schema type
         >>> type(FileAccess.factory(LOCAL_FTYPE)).__name__
@@ -366,10 +365,10 @@ if __name__ == "__main__":
     rootdir = os.path.expanduser('~/tmp/')
     filepath = os.path.join(rootdir, '011.mp3')
     lfa = FileAccess.factory(type=LOCAL_FTYPE, path=filepath)
-    print((len(lfa)))
+    print(len(lfa))
     for i in lfa:
         print(i)
 
     print(lfa)
 
-    print((filepath in lfa))
+    print(filepath in lfa)

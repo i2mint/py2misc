@@ -70,7 +70,7 @@ def make_sentinel(name='_MISSING', var_name=None):
 
     """
 
-    class Sentinel(object):
+    class Sentinel:
         def __init__(self):
             self.name = name
             self.var_name = var_name
@@ -78,7 +78,7 @@ def make_sentinel(name='_MISSING', var_name=None):
         def __repr__(self):
             if self.var_name:
                 return self.var_name
-            return '%s(%r)' % (self.__class__.__name__, self.name)
+            return '{}({!r})'.format(self.__class__.__name__, self.name)
 
         if var_name:
             def __reduce__(self):
@@ -102,7 +102,7 @@ def _indent(text, margin, newline='\n', key=bool):
 NO_DEFAULT = make_sentinel(var_name='NO_DEFAULT')
 
 
-class FunctionBuilder(object):
+class FunctionBuilder:
     """The FunctionBuilder type provides an interface for programmatically
     creating new functions, either based on existing functions or from
     scratch.
@@ -178,8 +178,8 @@ class FunctionBuilder(object):
     @classmethod
     def _argspec_to_dict(cls, f):
         argspec = inspect.getfullargspec(f)
-        return dict((attr, getattr(argspec, attr))
-                    for attr in cls._argspec_defaults)
+        return {attr: getattr(argspec, attr)
+                    for attr in cls._argspec_defaults}
 
     _defaults = {'doc': str,
                  'dict': dict,
@@ -237,8 +237,8 @@ class FunctionBuilder(object):
         kwonly_pairs = None
         formatters = {}
         if self.kwonlyargs:
-            kwonly_pairs = dict((arg, arg)
-                                for arg in self.kwonlyargs)
+            kwonly_pairs = {arg: arg
+                                for arg in self.kwonlyargs}
             formatters['formatvalue'] = lambda value: '=' + value
 
         # TODO: Replace with inspect.signature
@@ -262,7 +262,7 @@ class FunctionBuilder(object):
         # TODO: copy_body? gonna need a good signature regex.
         # TODO: might worry about __closure__?
         if not callable(func):
-            raise TypeError('expected callable object, not %r' % (func,))
+            raise TypeError('expected callable object, not {!r}'.format(func))
 
         kwargs = {'name': func.__name__,
                   'doc': func.__doc__,
@@ -353,9 +353,9 @@ class FunctionBuilder(object):
         keyword-only argument
         """
         if arg_name in self.args:
-            raise ExistingArgument('arg %r already in func %s arg list' % (arg_name, self.name))
+            raise ExistingArgument('arg {!r} already in func {} arg list'.format(arg_name, self.name))
         if arg_name in self.kwonlyargs:
-            raise ExistingArgument('arg %r already in func %s kwonly arg list' % (arg_name, self.name))
+            raise ExistingArgument('arg {!r} already in func {} kwonly arg list'.format(arg_name, self.name))
         if not kwonly:
             self.args.append(arg_name)
             if default is not NO_DEFAULT:
@@ -442,7 +442,7 @@ def _parse_wraps_expected(expected):
                                  ' iterable of (name, default) pairs, or a mapping of '
                                  ' {name: default}, not %r')
         if not isinstance(argname, str):
-            raise ValueError('all "expected" argnames must be strings, not %r' % (argname,))
+            raise ValueError('all "expected" argnames must be strings, not {!r}'.format(argname))
 
         expected_items.append((argname, default))
 
