@@ -15,10 +15,9 @@ def dispatch_funcs(funcs, interface=None, *args, **kwargs):
         funcs = [funcs]
 
     if interface == 'cli':
-        print('Hi!')
-        from argh import dispatch_commands
+        from cw import dispatch
 
-        return dispatch_commands(funcs)
+        return dispatch(funcs)
 
     elif interface == 'ws':
         from py2api.py2rest.app_maker import dflt_run_app_kwargs, dispatch_funcs_to_web_app
